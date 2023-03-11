@@ -65,7 +65,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
         }
     }
 
-    Ok(())
+    //Ok(())
 }
 
 fn ui<B: Backend>(frame: &mut Frame<B>) {
@@ -75,6 +75,7 @@ fn ui<B: Backend>(frame: &mut Frame<B>) {
 
     let size = frame.size();
 
+    // This is the main block which houses all the others
     let block = Block::default()
         .borders(Borders::ALL)
         .title("Main Block with Round Corners")
@@ -82,6 +83,8 @@ fn ui<B: Backend>(frame: &mut Frame<B>) {
         .border_type(BorderType::Rounded);
     frame.render_widget(block, size);
 
+    // Rust has a 'layout' which lets me
+    // mess with, well, how things are laid out
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(4)
@@ -100,19 +103,22 @@ fn ui<B: Backend>(frame: &mut Frame<B>) {
             Span::styled("With", Style::default().fg(Color::DarkGray)),
             Span::styled(" background", Style::default().fg(Color::Red)),
         ])
-        .style(Style::default().bg(Color::Green));
+        .style(Style::default().bg(Color::Cyan));
     frame.render_widget(block, top_chunks[0]);
 
     // Top right inner block styled w/ title aligned right
     let block = Block::default()
         .title(Span::styled(
-            "Style Title",
+            "Style Title with rounded border",
             Style::default()
                 .fg(Color::White)
                 .bg(Color::Red)
                 .add_modifier(Modifier::ITALIC),
         ))
-        .title_alignment(Alignment::Right);
+        .title_alignment(Alignment::Right)
+        .borders(Borders::ALL)
+        .border_style(Style::default().fg(Color::Cyan))
+        .border_type(BorderType::Rounded);
     frame.render_widget(block, top_chunks[1]);
 
     // Bottom two inner blocks
@@ -122,14 +128,16 @@ fn ui<B: Backend>(frame: &mut Frame<B>) {
         .split(chunks[1]);
 
     // Bottom left block with all default borders
-    let block = Block::default().title("With borders").borders(Borders::ALL);
+    let block = Block::default()
+        .title("With default borders")
+        .borders(Borders::ALL);
     frame.render_widget(block, bottom_chunks[0]);
 
     // Bottom right block with styled left and right border
     let block = Block::default()
         .title("With styled borders and doubled borders")
         .title_alignment(Alignment::Center)
-        .border_style(Style::default().fg(Color::Cyan))
+        .border_style(Style::default().fg(Color::Blue))
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .border_type(BorderType::Double);
     frame.render_widget(block, bottom_chunks[1]);
